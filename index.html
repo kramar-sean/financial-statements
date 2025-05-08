@@ -1,113 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Personal Finance Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Financial Statements</title>
   <style>
-    body { font-family: Arial; margin: 20px; }
-    h2 { margin-top: 30px; }
-    input[type="number"] { width: 100px; }
-    .section { margin-bottom: 20px; }
-    .grid { display: grid; grid-template-columns: 200px 120px; gap: 10px; }
-    .output { font-weight: bold; }
+    body { font-family: Helvetica, Arial, sans-serif; margin: 2cm; }
+    h1 { text-align: center; font-size: 28px; margin-bottom: 0; }
+    .subtitle { text-align: center; font-size: 18px; margin-top: 5px; margin-bottom: 40px; }
+    h2 { margin-top: 30px; border-bottom: 2px solid #000; padding-bottom: 5px; }
+    .statement { border: 2px solid #000; border-radius: 8px; padding: 20px; margin-bottom: 40px; background-color: #fdfdfd; }
+    .section { margin-top: 20px; margin-bottom: 20px; }
+    .section h3 { border-bottom: 1px solid #aaa; padding-bottom: 3px; }
+    .grid { display: grid; grid-template-columns: 1fr 100px; gap: 8px 16px; align-items: center; }
+    .grid label { text-align: left; }
+    .grid input[type="number"] { text-align: right; width: 100%; }
+    .output { font-weight: bold; border-top: 1px solid #000; margin-top: 15px; padding-top: 10px; font-size: 16px; }
+    .ratios, .responses { page-break-before: always; }
+    .ratios p, .responses p { margin-top: 15px; }
+    .ratios em { display: block; margin-top: 4px; font-style: italic; }
+    textarea { width: 100%; height: 60px; margin-top: 8px; border: 1px solid #ccc; padding: 8px; }
+    input[type="text"], input[type="date"] { padding: 4px; }
+    @media print {
+      body { margin: 0; }
+      button { display: none !important; }
+    }
   </style>
 </head>
 <body>
 
-  <h1>Personal Finance Calculator</h1>
+  <h1>Personal Financial Statements</h1>
+  <div class="subtitle">for <input type="text" id="studentName" placeholder="Enter your name" /></div>
 
-  <form id="financeForm">
-
+  <div class="statement">
+    <h2>Balance Sheet</h2>
+    <p><strong>As of:</strong> <input type="date" id="balanceDate" /></p>
     <div class="section">
-      <h2>Assets</h2>
-      <div class="grid" id="assetsList">
-        <input type="text" placeholder="Asset Name" />
-        <input type="number" placeholder="Amount" />
+      <h3>Assets</h3>
+      <div class="grid" id="assets">
+        <label>Checking Account</label><input type="number" />
+        <label>Savings Account</label><input type="number" />
       </div>
-      <button type="button" onclick="addField('assetsList')">Add Asset</button>
     </div>
-
     <div class="section">
-      <h2>Liabilities</h2>
-      <div class="grid" id="liabilitiesList">
-        <input type="text" placeholder="Liability Name" />
-        <input type="number" placeholder="Amount" />
+      <h3>Liabilities</h3>
+      <div class="grid" id="liabilities">
+        <label>Credit Card Debt</label><input type="number" />
       </div>
-      <button type="button" onclick="addField('liabilitiesList')">Add Liability</button>
     </div>
-
-    <div class="section">
-      <h2>Monthly Income</h2>
-      <div class="grid" id="incomeList">
-        <input type="text" placeholder="Income Source" />
-        <input type="number" placeholder="Amount" />
-      </div>
-      <button type="button" onclick="addField('incomeList')">Add Income</button>
-    </div>
-
-    <div class="section">
-      <h2>Monthly Expenses</h2>
-      <div class="grid" id="expensesList">
-        <input type="text" placeholder="Expense Category" />
-        <input type="number" placeholder="Amount" />
-      </div>
-      <button type="button" onclick="addField('expensesList')">Add Expense</button>
-    </div>
-
-    <div class="section">
-      <button type="button" onclick="calculateStatements()">Calculate</button>
-    </div>
-
-  </form>
-
-  <div id="results" class="section">
-    <h2>Results</h2>
-    <p><span class="output">Net Worth:</span> $<span id="netWorth">0</span></p>
-    <p><span class="output">Cash Flow:</span> $<span id="cashFlow">0</span></p>
-    <p><span class="output">Debt Ratio:</span> <span id="debtRatio">0%</span></p>
-    <p><span class="output">Liquidity Ratio:</span> <span id="liquidityRatio">0</span></p>
-    <p><span class="output">Savings Ratio:</span> <span id="savingsRatio">0%</span></p>
+    <div class="output">Net Worth: $<span id="netWorth">4,000</span></div>
   </div>
 
-  <script>
-    function addField(sectionId) {
-      const container = document.getElementById(sectionId);
-      container.appendChild(document.createElement("input")).placeholder = "Label";
-      container.lastChild.type = "text";
-      container.appendChild(document.createElement("input")).placeholder = "Amount";
-      container.lastChild.type = "number";
-    }
+  <div class="statement" style="page-break-before: always;">
+    <h2>Cash Flow Statement</h2>
+    <p><strong>For the period:</strong> <input type="date" id="startDate" /> to <input type="date" id="endDate" /></p>
+    <div class="section">
+      <h3>Cash Inflows</h3>
+      <div class="grid" id="inflows">
+        <label>Income</label><input type="number" />
+      </div>
+    </div>
+    <div class="section">
+      <h3>Cash Outflows</h3>
+      <div class="grid" id="outflows">
+        <label>Fixed Expenses</label><input type="number" />
+        <label>Variable Expenses</label><input type="number" />
+      </div>
+    </div>
+    <div class="output">Net Cash Flow: $<span id="netCashFlow">1,500</span></div>
+  </div>
 
-    function getValues(sectionId) {
-      const elements = document.getElementById(sectionId).querySelectorAll("input");
-      let total = 0;
-      for (let i = 1; i < elements.length; i += 2) {
-        const value = parseFloat(elements[i].value) || 0;
-        total += value;
-      }
-      return total;
-    }
+  <div class="ratios">
+    <h2>Financial Ratios</h2>
+    <p><strong>Debt Ratio:</strong> 11.1%<em>Shows how much of your assets are financed by debt. Lower is better.</em></p>
+    <p><strong>Current Ratio:</strong> 3.0<em>Measures short-term financial health. A value over 1.0 means you can cover upcoming bills.</em></p>
+    <p><strong>Liquidity Ratio:</strong> 2.5<em>You can cover 2.5 months of expenses with your liquid assets.</em></p>
+    <p><strong>Debt-Payments Ratio:</strong> 11.1%<em>Measures how much of your income goes to debt. Aim for under 20%.</em></p>
+    <p><strong>Savings Ratio:</strong> 33.3%<em>Indicates how much you’re saving. Higher is better.</em></p>
+  </div>
 
-    function calculateStatements() {
-      const assets = getValues('assetsList');
-      const liabilities = getValues('liabilitiesList');
-      const income = getValues('incomeList');
-      const expenses = getValues('expensesList');
+  <div class="responses">
+    <h2>Reflection Questions</h2>
+    <p><strong>What surprised you about your net worth or cash flow?</strong></p>
+    <textarea></textarea>
 
-      const netWorth = assets - liabilities;
-      const cashFlow = income - expenses;
-      const debtRatio = assets > 0 ? liabilities / assets : 0;
-      const liquidityRatio = expenses > 0 ? income / expenses : 0;
-      const savingsRatio = income > 0 ? cashFlow / income : 0;
+    <p><strong>Are there areas where you could reduce expenses?</strong></p>
+    <textarea></textarea>
 
-      document.getElementById('netWorth').innerText = netWorth.toFixed(2);
-      document.getElementById('cashFlow').innerText = cashFlow.toFixed(2);
-      document.getElementById('debtRatio').innerText = (debtRatio * 100).toFixed(1) + "%";
-      document.getElementById('liquidityRatio').innerText = liquidityRatio.toFixed(2);
-      document.getElementById('savingsRatio').innerText = (savingsRatio * 100).toFixed(1) + "%";
-    }
-  </script>
+    <p><strong>What are other adjustments you’d like to make?</strong></p>
+    <textarea></textarea>
+  </div>
+
+  <div class="section">
+    <button onclick="window.print()">Export to PDF</button>
+  </div>
 
 </body>
 </html>
+
