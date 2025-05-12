@@ -1,203 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Personal Financial Statements</title>
+  <meta name="version" content="v2.2-savings-separated" />
   <style>
-    body { font-family: Helvetica, Arial, sans-serif; margin: 2cm; }
-    h1 { text-align: center; font-size: 28px; margin-bottom: 0; }
-    .subtitle { text-align: center; font-size: 18px; margin-top: 5px; margin-bottom: 40px; }
-    h2 { border-bottom: 2px solid #000; padding-bottom: 5px; }
-    .statement { border: 2px solid #000; border-radius: 8px; padding: 20px; margin-bottom: 40px; background-color: #fdfdfd; }
-    .statement-desc { font-style: italic; font-size: 14px; color: #555; margin-bottom: 10px; }
-    .section { margin-top: 20px; }
-    .section h3 { border-bottom: 1px solid #aaa; padding-bottom: 3px; }
-    .grid-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-    .grid-table td { padding: 6px 4px; vertical-align: top; }
-    .grid-table td.label { text-align: left; }
-    .grid-table td.amount { text-align: right; width: 120px; }
-    .output { font-weight: bold; border-top: 2px solid #000; margin-top: 15px; padding-top: 10px; font-size: 16px; display: flex; justify-content: space-between; }
-    .calculation { font-style: italic; margin-top: 5px; color: #333; text-align: right; }
-    .ratios, .responses { page-break-before: always; }
-    .ratios p, .responses p { margin-top: 15px; }
-    .ratios em { display: block; font-style: italic; margin-top: 4px; }
-    textarea { width: 100%; height: 60px; border: 1px solid #ccc; padding: 8px; margin-top: 5px; }
-    .add-btn { margin: 5px 0; }
-    @media print {
-      body { margin: 0; }
-      button, .remove-btn { display: none !important; }
+    body {
+      font-family: Helvetica, sans-serif;
+      background-color: #f7f9fa;
+      margin: 2rem;
+      color: #333;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .description {
+      font-style: italic;
+      color: #555;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .subsection {
+      margin-top: 1.5rem;
+    }
+
+    .subsection h4 {
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+
+    .item-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .item-row input[type="text"] {
+      flex: 1;
+      padding: 0.4rem;
+    }
+
+    .item-row input[type="number"] {
+      width: 150px;
+      padding: 0.4rem;
+      text-align: right;
+    }
+
+    .item-row button {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .totals {
+      font-weight: bold;
+      margin-top: 1rem;
+      border-top: 2px solid #000;
+      padding-top: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .calc-line {
+      font-style: italic;
+      text-align: right;
+      color: #555;
+    }
+
+    .add-button {
+      margin-top: 0.5rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .pdf-button {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .pdf-button button {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .pdf-button small {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: italic;
+      color: #666;
     }
   </style>
 </head>
-<body oninput="autoCalculate()">
-
+<body>
   <h1>Personal Financial Statements</h1>
-  <div class="subtitle">for <input type="text" id="studentName" placeholder="Enter your name" /></div>
 
-  <div class="statement">
-    <h1>Balance Sheet</h1>
-    <p class="statement-desc">Your Balance Sheet is a snapshot of your net worth at a given point in time. It compares everything you own (assets) to everything you owe (liabilities).</p>
+  <div class="section">
+    <h2>Balance Sheet</h2>
+    <p class="description">A snapshot of your net worth at a specific point in time.</p>
 
-    <div class="section">
-      <h2>Assets</h2>
-      <h3>Current Assets</h3>
-      <table class="grid-table" id="currentAssets"></table>
-      <button class="add-btn" onclick="addRow('currentAssets')">Add Current Asset</button>
+    <div class="subsection">
+      <h4>Current Assets</h4>
+      <div id="currentAssets"></div>
+      <button class="add-button" onclick="addItem('currentAssets')">Add Current Asset</button>
     </div>
-    <div class="section">
-      <h3>Long-Term Assets</h3>
-      <table class="grid-table" id="longTermAssets"></table>
-      <button class="add-btn" onclick="addRow('longTermAssets')">Add Long-Term Asset</button>
+
+    <div class="subsection">
+      <h4>Long-Term Assets</h4>
+      <div id="longTermAssets"></div>
+      <button class="add-button" onclick="addItem('longTermAssets')">Add Long-Term Asset</button>
     </div>
-    <div class="output"><span>Total Assets:</span> <span id="totalAssets">$0</span></div>
 
-    <div class="section">
-       <h2>Liabilities</h2>
-      <h3>Current Liabilities</h3>
-      <table class="grid-table" id="currentLiabilities"></table>
-      <button class="add-btn" onclick="addRow('currentLiabilities')">Add Current Liability</button>
+    <div class="subsection">
+      <h4>Current Liabilities</h4>
+      <div id="currentLiabilities"></div>
+      <button class="add-button" onclick="addItem('currentLiabilities')">Add Current Liability</button>
     </div>
-    <div class="section">
-      <h3>Long-Term Liabilities</h3>
-      <table class="grid-table" id="longTermLiabilities"></table>
-      <button class="add-btn" onclick="addRow('longTermLiabilities')">Add Long-Term Liability</button>
+
+    <div class="subsection">
+      <h4>Long-Term Liabilities</h4>
+      <div id="longTermLiabilities"></div>
+      <button class="add-button" onclick="addItem('longTermLiabilities')">Add Long-Term Liability</button>
     </div>
-    <div class="output"><span>Total Liabilities:</span> <span id="totalLiabilities">$0</span></div>
-    <div class="output"><span>Net Worth:</span> <span id="netWorth">$0</span></div>
-    <div class="calculation" id="netWorthCalc"></div>
-  </div>
 
-  <div class="statement" style="page-break-before: always;">
-    <h1>Cash Flow Statement</h1>
-    <p class="statement-desc">Your Cash Flow Statement tracks your income and spending during a specific time period. It helps you see whether you’re living within your means or overspending.</p>
-
-    <div class="section">
-      <h2>Cash Inflows</h2>
-      <table class="grid-table" id="inflows"></table>
-      <button class="add-btn" onclick="addRow('inflows')">Add Income Source</button>
-      <div class="output"><span>Total Inflows:</span> <span id="totalInflows">$0</span></div>
-    </div>
-    <div class="section">
-      <h2>Cash Outflows</h2>
-      <h3>Fixed Expenses</h3>
-     <div class="item-row non-removable">
-  <input type="text" value="Savings Contributions" readonly />
-  <input type="number" id="savingsInput" placeholder="0" oninput="recalculate()" />
-</div>
-
-      <table class="grid-table" id="fixedExpenses"></table>
-      <button class="add-btn" onclick="addRow('fixedExpenses')">Add Fixed Expense</button>
-    </div>
-    <div class="section">
-      <h3>Variable Expenses</h3>
-      <table class="grid-table" id="variableExpenses"></table>
-      <button class="add-btn" onclick="addRow('variableExpenses')">Add Variable Expense</button>
-      <div class="output"><span>Total Outflows:</span> <span id="totalOutflows">$0</span></div>
-    </div>
-    <div class="output"><span>Net Cash Flow:</span> <span id="netCashFlow">$0</span></div>
-    <div class="calculation" id="cashFlowCalc"></div>
-  </div>
-
-  <div class="ratios">
-    <h2>Financial Ratios</h2>
-    <p><strong>Debt Ratio:</strong> <span id="debtRatio">0%</span><em>Shows how much of your assets are financed by debt. Lower is better.</em></p>
-    <p><strong>Current Ratio:</strong> <span id="currentRatio">0</span><em>Measures short-term financial health. A value over 1.0 means you can cover upcoming bills.</em></p>
-    <p><strong>Liquidity Ratio:</strong> <span id="liquidityRatio">0</span><em>You can cover <span id="liquidityRatioExplanation">0</span> months of expenses with your liquid assets.</em></p>
-    <p><strong>Debt-Payments Ratio:</strong> <span id="debtPaymentsRatio">0%</span><em>Measures how much of your income goes to debt. Aim for under 20%.</em></p>
-    <p><strong>Savings Ratio:</strong> <span id="savingsRatio">0%</span><em>Indicates how much of your monthly income you’re saving. Higher is better.</em></p>
-  </div>
-
-  <div class="responses">
-    <h2>Reflection Questions</h2>
-    <p><strong>What surprised you about your net worth or cash flow?</strong></p>
-    <textarea></textarea>
-
-    <p><strong>Are there areas where you could reduce expenses?</strong></p>
-    <textarea></textarea>
-
-    <p><strong>What are other adjustments you’d like to make?</strong></p>
-    <textarea></textarea>
+    <div class="totals">Net Worth: <span id="netWorth">$0.00</span></div>
+    <div class="calc-line" id="netWorthCalc">(Assets − Liabilities = Net Worth)</div>
   </div>
 
   <div class="section">
-    <button onclick="window.print()">Print or Download to PDF</button>
+    <h2>Cash Flow Statement</h2>
+    <p class="description">Your income and expenses over a specific time period.</p>
+
+    <div class="subsection">
+      <h4>Cash Inflows</h4>
+      <div id="inflows"></div>
+      <button class="add-button" onclick="addItem('inflows')">Add Inflow</button>
+    </div>
+
+    <h2>Savings</h2>
+    <div class="subsection">
+      <div id="savingsOutflows"></div>
+      <button class="add-button" onclick="addItem('savingsOutflows')">Add Savings Contribution</button>
+    </div>
+
+    <div class="subsection">
+      <h4>Fixed Expenses</h4>
+      <div id="fixedOutflows"></div>
+      <button class="add-button" onclick="addItem('fixedOutflows')">Add Fixed Expense</button>
+    </div>
+
+    <div class="subsection">
+      <h4>Variable Expenses</h4>
+      <div id="variableOutflows"></div>
+      <button class="add-button" onclick="addItem('variableOutflows')">Add Variable Expense</button>
+    </div>
+
+    <div class="totals">Net Cash Flow: <span id="netCashFlow">$0.00</span></div>
+    <div class="calc-line" id="netCashCalc">(Inflows − Outflows = Net Cash Flow)</div>
+  </div>
+
+  <div class="section">
+    <h2>Financial Ratios</h2>
+    <p><strong>Savings Ratio:</strong> <span id="savingsRatio">0.0%</span></p>
+    <p class="description">Savings Ratio = Total Savings ÷ Total Inflows</p>
+  </div>
+
+  <div class="pdf-button">
+    <button onclick="window.print()">Print / Download as PDF</button>
+    <small>Use your browser’s “Save as PDF” option when printing</small>
   </div>
 
   <script>
-    function addRow(sectionId) {
-      const table = document.getElementById(sectionId);
-      const row = document.createElement("tr");
-      const label = document.createElement("td");
-      const amount = document.createElement("td");
-      label.className = "label";
-      amount.className = "amount";
-
-      const textInput = document.createElement("input");
-      textInput.type = "text";
-      textInput.placeholder = "Label";
-      const numInput = document.createElement("input");
-      numInput.type = "number";
-      numInput.min = "0";
-      numInput.step = "0.01";
-
-      label.appendChild(textInput);
-      amount.appendChild(numInput);
-      row.appendChild(label);
-      row.appendChild(amount);
-      table.appendChild(row);
+    function formatMoney(value) {
+      return '$' + Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
     }
 
-    function formatCurrency(value) {
-      return "$" + Number(value).toLocaleString("en-US", { minimumFractionDigits: 0 });
+    function addItem(sectionId) {
+      const section = document.getElementById(sectionId);
+      const row = document.createElement("div");
+      row.className = "item-row";
+      row.innerHTML = `
+        <input type="text" placeholder="Description" />
+        <input type="number" placeholder="0" oninput="calculate()" />
+        <button onclick="this.parentElement.remove(); calculate()">✕</button>
+      `;
+      section.appendChild(row);
     }
 
-    function autoCalculate() {
-      function sum(sectionId) {
-        return Array.from(document.getElementById(sectionId).querySelectorAll("input[type='number']"))
-          .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
-      }
+    function sum(sectionId) {
+      const section = document.getElementById(sectionId);
+      const numbers = section.querySelectorAll("input[type='number']");
+      return Array.from(numbers).reduce((sum, input) => sum + parseFloat(input.value || 0), 0);
+    }
 
-      const assets = sum("currentAssets") + sum("longTermAssets");
-      const liabilities = sum("currentLiabilities") + sum("longTermLiabilities");
-      const inflows = sum("inflows");
-      const outflows = sum("fixedExpenses") + sum("variableExpenses");
+    function calculate() {
+      const inflows = sum('inflows');
+      const savings = sum('savingsOutflows');
+      const fixed = sum('fixedOutflows');
+      const variable = sum('variableOutflows');
+      const totalOutflows = savings + fixed + variable;
+      const netCash = inflows - totalOutflows;
+      const savingsRatio = inflows > 0 ? (savings / inflows) * 100 : 0;
 
+      const assets = sum('currentAssets') + sum('longTermAssets');
+      const liabilities = sum('currentLiabilities') + sum('longTermLiabilities');
       const netWorth = assets - liabilities;
-      const netCashFlow = inflows - outflows;
 
-      document.getElementById("totalAssets").textContent = formatCurrency(assets);
-      document.getElementById("totalLiabilities").textContent = formatCurrency(liabilities);
-      document.getElementById("netWorth").textContent = formatCurrency(netWorth);
-      document.getElementById("netWorthCalc").textContent = `(${formatCurrency(assets)} – ${formatCurrency(liabilities)} = ${formatCurrency(netWorth)})`;
-
-      document.getElementById("totalInflows").textContent = formatCurrency(inflows);
-      document.getElementById("totalOutflows").textContent = formatCurrency(outflows);
-      document.getElementById("netCashFlow").textContent = formatCurrency(netCashFlow);
-      document.getElementById("cashFlowCalc").textContent = `(${formatCurrency(inflows)} – ${formatCurrency(outflows)} = ${formatCurrency(netCashFlow)})`;
-
-      const debtRatio = assets > 0 ? liabilities / assets : 0;
-      const currentRatio = liabilities > 0 ? assets / liabilities : 0;
-      const liquidityRatio = outflows > 0 ? assets / outflows : 0;
-      const debtPaymentsRatio = inflows > 0 ? liabilities / inflows : 0;
-     const savingsAmount = parseFloat(document.getElementById('savingsInput').value || 0);
-const fixedOutflows = sumSection('fixedOutflows');
-const variableOutflows = sumSection('variableOutflows');
-const outflowTotal = fixedOutflows + variableOutflows + savingsAmount;
-
-const savingsRatio = inflowTotal > 0 ? (savingsAmount / inflowTotal) * 100 : 0;
-
-
-
-
-
-      document.getElementById("debtRatio").textContent = (debtRatio * 100).toFixed(1) + "%";
-      document.getElementById("currentRatio").textContent = currentRatio.toFixed(2);
-      document.getElementById("liquidityRatio").textContent = liquidityRatio.toFixed(2);
-      document.getElementById("liquidityRatioExplanation").textContent = liquidityRatio.toFixed(1);
-      document.getElementById("debtPaymentsRatio").textContent = (debtPaymentsRatio * 100).toFixed(1) + "%";
-      document.getElementById('savingsRatio').textContent = savingsRatio.toFixed(1) + '%';;
+      document.getElementById('netCashFlow').textContent = formatMoney(netCash);
+      document.getElementById('savingsRatio').textContent = savingsRatio.toFixed(1) + '%';
+      document.getElementById('netWorth').textContent = formatMoney(netWorth);
     }
+
+    window.onload = calculate;
   </script>
 </body>
 </html>
