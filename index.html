@@ -181,7 +181,12 @@
       const liquidityRatio = outflows > 0 ? assets / outflows : 0;
       const debtPaymentsRatio = inflows > 0 ? liabilities / inflows : 0;
      const savingsAmount = parseFloat(document.getElementById('savingsInput').value || 0);
+const fixedOutflows = sumSection('fixedOutflows');
+const variableOutflows = sumSection('variableOutflows');
+const outflowTotal = fixedOutflows + variableOutflows + savingsAmount;
+
 const savingsRatio = inflowTotal > 0 ? (savingsAmount / inflowTotal) * 100 : 0;
+
 
 
 
