@@ -12,7 +12,7 @@
       color: #333;
     }
 
-    h1, h2, h3 {
+    h1, h2 {
       text-align: center;
     }
 
@@ -43,6 +43,11 @@
       color: #555;
       text-align: center;
       margin-bottom: 1rem;
+    }
+
+    h3 {
+      text-align: left;
+      margin-top: 1.5rem;
     }
 
     .item-row {
@@ -119,20 +124,35 @@
       color: #666;
     }
 
-    .ratio {
-      margin-top: 1rem;
+    .page-break {
+      page-break-before: always;
     }
 
-    .ratio strong {
-      display: inline-block;
-      width: 180px;
-    }
+    @media print {
+      .add-button,
+      .pdf-button {
+        display: none !important;
+      }
 
-    .ratio em {
-      display: block;
-      font-style: italic;
-      margin-left: 180px;
-      color: #444;
+      .page-break {
+        page-break-before: always;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        border: none;
+        background: none;
+        padding: 0;
+      }
+
+      .item-row button {
+        display: none;
+      }
+
+      #nameInput {
+        border: none;
+        background: none;
+      }
     }
   </style>
 </head>
@@ -140,11 +160,11 @@
   <h1>Personal Financial Statements</h1>
   <div id="subtitle">for <input id="nameInput" placeholder="Enter your name" oninput="updateName()" /></div>
 
-  <!-- Balance Sheet Section -->
   <div class="section">
     <h2>Balance Sheet</h2>
     <p class="description">A snapshot of your net worth at a specific point in time.</p>
 
+    <h3>Assets</h3>
     <h4>Current Assets</h4>
     <div id="currentAssets"></div>
     <button class="add-button" onclick="addItem('currentAssets')">Add Current Asset</button>
@@ -153,6 +173,7 @@
     <div id="longTermAssets"></div>
     <button class="add-button" onclick="addItem('longTermAssets')">Add Long-Term Asset</button>
 
+    <h3>Liabilities</h3>
     <h4>Current Liabilities</h4>
     <div id="currentLiabilities"></div>
     <button class="add-button" onclick="addItem('currentLiabilities')">Add Current Liability</button>
@@ -165,17 +186,13 @@
     <div class="calc-line">(Assets − Liabilities = Net Worth)</div>
   </div>
 
-  <!-- Cash Inflows Section -->
-  <div class="section">
-    <h2>Cash Inflows</h2>
-    <p class="description">Track your income sources for the month or budget period.</p>
+  <div class="section page-break">
+    <h2>Cash Flow Statement</h2>
+    <p class="description">Shows your income and spending over time to help you assess financial health.</p>
+
+    <h3>Cash Inflows</h3>
     <div id="inflows"></div>
     <button class="add-button" onclick="addItem('inflows')">Add Income Source</button>
-  </div>
-
-  <!-- Cash Outflows Section -->
-  <div class="section">
-    <h2>Cash Outflows</h2>
 
     <h3>Savings</h3>
     <div id="savingsOutflows"></div>
@@ -193,39 +210,16 @@
     <div class="calc-line">(Inflows − Outflows = Net Cash Flow)</div>
   </div>
 
-  <!-- Ratios -->
-  <div class="section">
+  <div class="section page-break">
     <h2>Financial Ratios</h2>
-
-    <div class="ratio">
-      <strong>Debt Ratio:</strong> <span id="debtRatio">0%</span>
-      <em id="debtRatioText"></em>
-    </div>
-    <div class="ratio">
-      <strong>Current Ratio:</strong> <span id="currentRatio">0.00</span>
-      <em id="currentRatioText"></em>
-    </div>
-    <div class="ratio">
-      <strong>Liquidity Ratio:</strong> <span id="liquidityRatio">0.00</span>
-      <em id="liquidityRatioText"></em>
-    </div>
-    <div class="ratio">
-      <strong>Debt-Payments Ratio:</strong> <span id="debtPaymentsRatio">0%</span>
-      <em id="debtPaymentsRatioText"></em>
-    </div>
-    <div class="ratio">
-      <strong>Savings Ratio:</strong> <span id="savingsRatio">0%</span>
-      <em id="savingsRatioText"></em>
-    </div>
+    <div class="totals"><strong>Section intentionally left for future enhancement with detailed ratios.</strong></div>
   </div>
 
-  <!-- PDF Export -->
   <div class="pdf-button">
     <button onclick="window.print()">Print / Download as PDF</button>
     <small>Use your browser’s “Save as PDF” option when printing</small>
   </div>
 
-  <!-- Script -->
   <script>
     function formatMoney(value) {
       return '$' + Number(value || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
@@ -235,11 +229,11 @@
       const section = document.getElementById(sectionId);
       const row = document.createElement("div");
       row.className = "item-row";
-      row.innerHTML = \`
+      row.innerHTML = `
         <input type="text" placeholder="Description" />
         <input type="number" placeholder="0" oninput="calculate()" />
         <button onclick="this.parentElement.remove(); calculate()">✕</button>
-      \`;
+      `;
       section.appendChild(row);
     }
 
@@ -251,7 +245,7 @@
 
     function updateName() {
       const name = document.getElementById('nameInput').value.trim();
-      document.title = name ? \`Personal Financial Statements for \${name}\` : 'Personal Financial Statements';
+      document.title = name ? `Personal Financial Statements for ${name}` : 'Personal Financial Statements';
     }
 
     function calculate() {
@@ -271,49 +265,8 @@
       const totalLiabilities = currentLiabilities + longTermLiabilities;
       const netWorth = totalAssets - totalLiabilities;
 
-      const liquidityRatio = currentAssets > 0 && totalOutflows > 0
-        ? (currentAssets / (totalOutflows / 12))
-        : 0;
-
-      const debtRatio = totalAssets > 0
-        ? (totalLiabilities / totalAssets) * 100
-        : 0;
-
-      const currentRatio = currentLiabilities > 0
-        ? currentAssets / currentLiabilities
-        : 0;
-
-      const debtPaymentsRatio = inflows > 0
-        ? (longTermLiabilities / inflows) * 100
-        : 0;
-
-      const savingsRatio = inflows > 0
-        ? (savings / inflows) * 100
-        : 0;
-
       document.getElementById('netCashFlow').textContent = formatMoney(netCash);
       document.getElementById('netWorth').textContent = formatMoney(netWorth);
-
-      document.getElementById('debtRatio').textContent = debtRatio.toFixed(1) + '%';
-      document.getElementById('currentRatio').textContent = currentRatio.toFixed(2);
-      document.getElementById('liquidityRatio').textContent = liquidityRatio.toFixed(2);
-      document.getElementById('debtPaymentsRatio').textContent = debtPaymentsRatio.toFixed(1) + '%';
-      document.getElementById('savingsRatio').textContent = savingsRatio.toFixed(1) + '%';
-
-      document.getElementById('debtRatioText').textContent =
-        \`About \${debtRatio.toFixed(1)}% of your assets are financed by debt.\`;
-
-      document.getElementById('currentRatioText').textContent =
-        \`You have \$\${currentAssets.toFixed(2)} in current assets for every \$1 of current liabilities.\`;
-
-      document.getElementById('liquidityRatioText').textContent =
-        \`You can cover roughly \${liquidityRatio.toFixed(1)} months of expenses with your current assets.\`;
-
-      document.getElementById('debtPaymentsRatioText').textContent =
-        \`\${debtPaymentsRatio.toFixed(1)}% of your income goes toward debt payments.\`;
-
-      document.getElementById('savingsRatioText').textContent =
-        \`You're saving \${savingsRatio.toFixed(1)}% of your income.\`;
     }
 
     window.onload = calculate;
