@@ -36,10 +36,11 @@
   <div class="subtitle">for <input type="text" id="studentName" placeholder="Enter your name" /></div>
 
   <div class="statement">
-    <h2>Balance Sheet</h2>
+    <h1>Balance Sheet</h1>
     <p class="statement-desc">Your Balance Sheet is a snapshot of your net worth at a given point in time. It compares everything you own (assets) to everything you owe (liabilities).</p>
 
     <div class="section">
+      <h2>Assets</h2>
       <h3>Current Assets</h3>
       <table class="grid-table" id="currentAssets"></table>
       <button class="add-btn" onclick="addRow('currentAssets')">Add Current Asset</button>
@@ -52,6 +53,7 @@
     <div class="output"><span>Total Assets:</span> <span id="totalAssets">$0</span></div>
 
     <div class="section">
+       <h2>Liabilities</h2>
       <h3>Current Liabilities</h3>
       <table class="grid-table" id="currentLiabilities"></table>
       <button class="add-btn" onclick="addRow('currentLiabilities')">Add Current Liability</button>
@@ -67,17 +69,22 @@
   </div>
 
   <div class="statement" style="page-break-before: always;">
-    <h2>Cash Flow Statement</h2>
+    <h1>Cash Flow Statement</h1>
     <p class="statement-desc">Your Cash Flow Statement tracks your income and spending during a specific time period. It helps you see whether you’re living within your means or overspending.</p>
 
     <div class="section">
-      <h3>Cash Inflows</h3>
+      <h2>Cash Inflows</h2>
       <table class="grid-table" id="inflows"></table>
       <button class="add-btn" onclick="addRow('inflows')">Add Income Source</button>
       <div class="output"><span>Total Inflows:</span> <span id="totalInflows">$0</span></div>
     </div>
     <div class="section">
+      <h2>Cash Outflows</h2>
       <h3>Fixed Expenses</h3>
+      <div class="item-row non-removable">
+  <input type="text" value="Savings Contributions" readonly />
+  <input type="number" id="savingsInput" placeholder="0" oninput="recalculate()" />
+</div>
       <table class="grid-table" id="fixedExpenses"></table>
       <button class="add-btn" onclick="addRow('fixedExpenses')">Add Fixed Expense</button>
     </div>
