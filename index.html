@@ -8,81 +8,87 @@
     body { font-family: Helvetica, Arial, sans-serif; margin: 2cm; }
     h1 { text-align: center; font-size: 28px; margin-bottom: 0; }
     .subtitle { text-align: center; font-size: 18px; margin-top: 5px; margin-bottom: 40px; }
-    h2 { margin-top: 30px; border-bottom: 2px solid #000; padding-bottom: 5px; }
+    h2 { border-bottom: 2px solid #000; padding-bottom: 5px; }
     .statement { border: 2px solid #000; border-radius: 8px; padding: 20px; margin-bottom: 40px; background-color: #fdfdfd; }
-    .section { margin-top: 20px; margin-bottom: 20px; }
+    .statement-desc { font-style: italic; font-size: 14px; color: #555; margin-bottom: 10px; }
+    .section { margin-top: 20px; }
     .section h3 { border-bottom: 1px solid #aaa; padding-bottom: 3px; }
-    .grid { display: grid; grid-template-columns: 1fr 100px 30px; gap: 8px 16px; align-items: center; }
-    .grid input[type="text"] { text-align: left; width: 100%; }
-    .grid input[type="number"] { text-align: right; width: 100%; }
-    .remove-btn { background: #f44336; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 14px; padding: 2px 6px; }
-    .output { font-weight: bold; border-top: 2px solid #000; margin-top: 15px; padding-top: 10px; font-size: 16px; }
-    .calculation { font-style: italic; margin-top: 5px; color: #333; }
+    .grid-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+    .grid-table td { padding: 6px 4px; vertical-align: top; }
+    .grid-table td.label { text-align: left; }
+    .grid-table td.amount { text-align: right; width: 120px; }
+    .output { font-weight: bold; border-top: 2px solid #000; margin-top: 15px; padding-top: 10px; font-size: 16px; display: flex; justify-content: space-between; }
+    .calculation { font-style: italic; margin-top: 5px; color: #333; text-align: right; }
     .ratios, .responses { page-break-before: always; }
     .ratios p, .responses p { margin-top: 15px; }
-    .ratios em { display: block; margin-top: 4px; font-style: italic; }
-    textarea { width: 100%; height: 60px; margin-top: 8px; border: 1px solid #ccc; padding: 8px; }
-    input[type="text"], input[type="date"] { padding: 4px; }
-    button { margin-top: 10px; }
+    .ratios em { display: block; font-style: italic; margin-top: 4px; }
+    textarea { width: 100%; height: 60px; border: 1px solid #ccc; padding: 8px; margin-top: 5px; }
+    .add-btn { margin: 5px 0; }
     @media print {
       body { margin: 0; }
       button, .remove-btn { display: none !important; }
     }
   </style>
 </head>
-<body>
+<body oninput="autoCalculate()">
 
   <h1>Personal Financial Statements</h1>
   <div class="subtitle">for <input type="text" id="studentName" placeholder="Enter your name" /></div>
 
   <div class="statement">
     <h2>Balance Sheet</h2>
-    <p><strong>As of:</strong> <input type="date" id="balanceDate" /></p>
+    <p class="statement-desc">Your Balance Sheet is a snapshot of your net worth at a given point in time. It compares everything you own (assets) to everything you owe (liabilities).</p>
+
     <div class="section">
-      <h3>Assets</h3>
-      <div class="grid" id="assets">
-        <input type="text" value="Checking Account" /><input type="number" /><span></span>
-        <input type="text" value="Savings Account" /><input type="number" /><span></span>
-      </div>
-      <button onclick="addField('assets')">Add Asset</button>
-      <div class="output">Total Assets: $<span id="totalAssets">0</span></div>
+      <h3>Current Assets</h3>
+      <table class="grid-table" id="currentAssets"></table>
+      <button class="add-btn" onclick="addRow('currentAssets')">Add Current Asset</button>
     </div>
     <div class="section">
-      <h3>Liabilities</h3>
-      <div class="grid" id="liabilities">
-        <input type="text" value="Credit Card Debt" /><input type="number" /><span></span>
-      </div>
-      <button onclick="addField('liabilities')">Add Liability</button>
-      <div class="output">Total Liabilities: $<span id="totalLiabilities">0</span></div>
+      <h3>Long-Term Assets</h3>
+      <table class="grid-table" id="longTermAssets"></table>
+      <button class="add-btn" onclick="addRow('longTermAssets')">Add Long-Term Asset</button>
     </div>
-    <button onclick="calculateAll()">Calculate Totals</button>
-    <div class="output">Net Worth: $<span id="netWorth">0</span></div>
-    <div class="calculation">(Assets – Liabilities = Net Worth)</div>
+    <div class="output"><span>Total Assets:</span> <span id="totalAssets">$0</span></div>
+
+    <div class="section">
+      <h3>Current Liabilities</h3>
+      <table class="grid-table" id="currentLiabilities"></table>
+      <button class="add-btn" onclick="addRow('currentLiabilities')">Add Current Liability</button>
+    </div>
+    <div class="section">
+      <h3>Long-Term Liabilities</h3>
+      <table class="grid-table" id="longTermLiabilities"></table>
+      <button class="add-btn" onclick="addRow('longTermLiabilities')">Add Long-Term Liability</button>
+    </div>
+    <div class="output"><span>Total Liabilities:</span> <span id="totalLiabilities">$0</span></div>
+    <div class="output"><span>Net Worth:</span> <span id="netWorth">$0</span></div>
+    <div class="calculation" id="netWorthCalc"></div>
   </div>
 
   <div class="statement" style="page-break-before: always;">
     <h2>Cash Flow Statement</h2>
-    <p><strong>For the period:</strong> <input type="date" id="startDate" /> to <input type="date" id="endDate" /></p>
+    <p class="statement-desc">Your Cash Flow Statement tracks your income and spending during a specific time period. It helps you see whether you’re living within your means or overspending.</p>
+
     <div class="section">
       <h3>Cash Inflows</h3>
-      <div class="grid" id="inflows">
-        <input type="text" value="Income" /><input type="number" /><span></span>
-      </div>
-      <button onclick="addField('inflows')">Add Income Source</button>
-      <div class="output">Total Inflows: $<span id="totalInflows">0</span></div>
+      <table class="grid-table" id="inflows"></table>
+      <button class="add-btn" onclick="addRow('inflows')">Add Income Source</button>
+      <div class="output"><span>Total Inflows:</span> <span id="totalInflows">$0</span></div>
     </div>
     <div class="section">
-      <h3>Cash Outflows</h3>
-      <div class="grid" id="outflows">
-        <input type="text" value="Fixed Expenses" /><input type="number" /><span></span>
-        <input type="text" value="Variable Expenses" /><input type="number" /><span></span>
-      </div>
-      <button onclick="addField('outflows')">Add Expense</button>
-      <div class="output">Total Outflows: $<span id="totalOutflows">0</span></div>
+      <h3>Fixed Expenses</h3>
+      <table class="grid-table" id="fixedExpenses"></table>
+      <button class="add-btn" onclick="addRow('fixedExpenses')">Add Fixed Expense</button>
     </div>
-    <button onclick="calculateAll()">Calculate Totals</button>
-    <div class="output">Net Cash Flow: $<span id="netCashFlow">0</span></div>
-    <div class="calculation">(Inflows – Outflows = Net Cash Flow)</div>
+    <div class="section">
+      <h3>Variable Expenses</h3>
+      <table class="grid-table" id="variableExpenses"></table>
+      <button class="add-btn" onclick="addRow('variableExpenses')">Add Variable Expense</button>
+      <div class="output"><span>Total Outflows:</span> <span id="totalOutflows">$0</span></div>
+    </div>
+    <div class="output"><span>Net Cash Flow:</span> <span id="netCashFlow">$0</span></div>
+    <div class="calculation" id="cashFlowCalc"></div>
   </div>
 
   <div class="ratios">
@@ -111,51 +117,56 @@
   </div>
 
   <script>
-    function addField(sectionId) {
-      const container = document.getElementById(sectionId);
+    function addRow(sectionId) {
+      const table = document.getElementById(sectionId);
+      const row = document.createElement("tr");
+      const label = document.createElement("td");
+      const amount = document.createElement("td");
+      label.className = "label";
+      amount.className = "amount";
+
       const textInput = document.createElement("input");
       textInput.type = "text";
       textInput.placeholder = "Label";
-      const numberInput = document.createElement("input");
-      numberInput.type = "number";
-      const removeBtn = document.createElement("button");
-      removeBtn.innerHTML = "×";
-      removeBtn.className = "remove-btn";
-      removeBtn.onclick = function() {
-        container.removeChild(textInput);
-        container.removeChild(numberInput);
-        container.removeChild(removeBtn);
-      };
-      container.appendChild(textInput);
-      container.appendChild(numberInput);
-      container.appendChild(removeBtn);
+      const numInput = document.createElement("input");
+      numInput.type = "number";
+      numInput.min = "0";
+      numInput.step = "0.01";
+
+      label.appendChild(textInput);
+      amount.appendChild(numInput);
+      row.appendChild(label);
+      row.appendChild(amount);
+      table.appendChild(row);
     }
 
-    function sumValues(sectionId) {
-      const inputs = document.getElementById(sectionId).getElementsByTagName("input");
-      let total = 0;
-      for (let i = 1; i < inputs.length; i += 2) {
-        total += parseFloat(inputs[i].value) || 0;
+    function formatCurrency(value) {
+      return "$" + Number(value).toLocaleString("en-US", { minimumFractionDigits: 0 });
+    }
+
+    function autoCalculate() {
+      function sum(sectionId) {
+        return Array.from(document.getElementById(sectionId).querySelectorAll("input[type='number']"))
+          .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
       }
-      return total;
-    }
 
-    function calculateAll() {
-      const assets = sumValues("assets");
-      const liabilities = sumValues("liabilities");
-      const inflows = sumValues("inflows");
-      const outflows = sumValues("outflows");
+      const assets = sum("currentAssets") + sum("longTermAssets");
+      const liabilities = sum("currentLiabilities") + sum("longTermLiabilities");
+      const inflows = sum("inflows");
+      const outflows = sum("fixedExpenses") + sum("variableExpenses");
 
       const netWorth = assets - liabilities;
       const netCashFlow = inflows - outflows;
 
-      document.getElementById("totalAssets").innerText = assets.toFixed(2);
-      document.getElementById("totalLiabilities").innerText = liabilities.toFixed(2);
-      document.getElementById("totalInflows").innerText = inflows.toFixed(2);
-      document.getElementById("totalOutflows").innerText = outflows.toFixed(2);
+      document.getElementById("totalAssets").textContent = formatCurrency(assets);
+      document.getElementById("totalLiabilities").textContent = formatCurrency(liabilities);
+      document.getElementById("netWorth").textContent = formatCurrency(netWorth);
+      document.getElementById("netWorthCalc").textContent = `(${formatCurrency(assets)} – ${formatCurrency(liabilities)} = ${formatCurrency(netWorth)})`;
 
-      document.getElementById("netWorth").innerText = netWorth.toFixed(2);
-      document.getElementById("netCashFlow").innerText = netCashFlow.toFixed(2);
+      document.getElementById("totalInflows").textContent = formatCurrency(inflows);
+      document.getElementById("totalOutflows").textContent = formatCurrency(outflows);
+      document.getElementById("netCashFlow").textContent = formatCurrency(netCashFlow);
+      document.getElementById("cashFlowCalc").textContent = `(${formatCurrency(inflows)} – ${formatCurrency(outflows)} = ${formatCurrency(netCashFlow)})`;
 
       const debtRatio = assets > 0 ? liabilities / assets : 0;
       const currentRatio = liabilities > 0 ? assets / liabilities : 0;
@@ -163,12 +174,12 @@
       const debtPaymentsRatio = inflows > 0 ? liabilities / inflows : 0;
       const savingsRatio = inflows > 0 ? netCashFlow / inflows : 0;
 
-      document.getElementById("debtRatio").innerText = (debtRatio * 100).toFixed(1) + "%";
-      document.getElementById("currentRatio").innerText = currentRatio.toFixed(2);
-      document.getElementById("liquidityRatio").innerText = liquidityRatio.toFixed(2);
-      document.getElementById("liquidityRatioExplanation").innerText = liquidityRatio.toFixed(1);
-      document.getElementById("debtPaymentsRatio").innerText = (debtPaymentsRatio * 100).toFixed(1) + "%";
-      document.getElementById("savingsRatio").innerText = (savingsRatio * 100).toFixed(1) + "%";
+      document.getElementById("debtRatio").textContent = (debtRatio * 100).toFixed(1) + "%";
+      document.getElementById("currentRatio").textContent = currentRatio.toFixed(2);
+      document.getElementById("liquidityRatio").textContent = liquidityRatio.toFixed(2);
+      document.getElementById("liquidityRatioExplanation").textContent = liquidityRatio.toFixed(1);
+      document.getElementById("debtPaymentsRatio").textContent = (debtPaymentsRatio * 100).toFixed(1) + "%";
+      document.getElementById("savingsRatio").textContent = (savingsRatio * 100).toFixed(1) + "%";
     }
   </script>
 </body>
