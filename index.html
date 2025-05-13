@@ -159,7 +159,7 @@ function calculate() {
   document.getElementById('savingsRatio').textContent = savingsRatio.toFixed(1) + '%';
 
   document.getElementById('debtRatioText').textContent = `About ${debtRatio.toFixed(1)}% of your assets are financed by debt.`;
-  document.getElementById('currentRatioText').textContent = `You have $${currentAssets.toFixed(2)} in current assets for every $1 of short-term debt.`;
+  document.getElementById('currentRatioText').textContent = `You have $${currentRatio.toFixed(2)} in current assets for every $1 of current liabilities.`;
   document.getElementById('liquidityRatioText').textContent = `You can cover about ${liquidity.toFixed(1)} months of expenses with your current assets.`;
   document.getElementById('savingsRatioText').textContent = `You're saving ${savingsRatio.toFixed(1)}% of your income.`;
 }
