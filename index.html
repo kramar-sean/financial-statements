@@ -29,12 +29,34 @@
     .ratio em { display: block; font-style: italic; margin-left: 180px; color: #444; }
     input[type="date"] { padding: 0.3rem; font-size: 1rem; }
     @media print {
-      .add-button, .pdf-button, .date-row { display: none !important; }
-      .page-break { page-break-before: always; }
-      input[type="text"], input[type="number"] { border: none; background: none; padding: 0; }
-      .item-row button { display: none; }
-      #nameInput { border: none; background: none; }
-    }
+  .add-button,
+  .pdf-button,
+  .date-row,
+  .no-print {  /* ✅ added this line */
+    display: none !important;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .item-row button {
+    display: none;
+  }
+
+  #nameInput {
+    border: none;
+    background: none;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -176,13 +198,14 @@ window.onload = calculate;
   <button onclick="window.print()">Print / Download as PDF</button>
   <small>Use your browser’s “Save as PDF” option when printing</small>
 </div>
-<div style="background:#fff3cd; border:1px solid #ffeeba; padding:1rem; border-radius:6px; margin-top:2rem;">
+<div class="no-print" style="background:#fff3cd; border:1px solid #ffeeba; padding:1rem; border-radius:6px; margin-top:2rem;">
   <strong>Privacy Disclaimer:</strong>
   <p>
     This tool runs entirely in your web browser. No data you enter is saved, stored, or shared in any way.
     If you'd like to keep a copy of your information, please download or print your completed form before closing this page.
   </p>
 </div>
+
 
 </body>
 </html>
