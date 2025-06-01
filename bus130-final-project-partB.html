@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Final Project Part B: Investment Modeling</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Helvetica, sans-serif; margin: 2rem; background-color: #f9f9f9; color: #333; }
+    h1, h2 { text-align: center; }
+    .section { background: #fff; border: 2px solid #000; border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem; }
+    .description { font-style: italic; color: #555; margin-bottom: 1rem; }
+    input[type="number"], input[type="text"], textarea { width: 100%; padding: 0.4rem; margin: 0.5rem 0; border: 1px solid #ccc; border-radius: 4px; }
+    .pdf-button { text-align: center; margin-top: 2rem; }
+    .pdf-button button { background: #28a745; color: white; border: none; padding: 0.75rem 1.25rem; font-size: 1rem; border-radius: 6px; cursor: pointer; }
+    canvas { margin-top: 2rem; background: #fff; border: 1px solid #ccc; border-radius: 4px; }
+    .disclaimer { background: #fff3cd; border: 1px solid #ffeeba; padding: 1rem; border-radius: 6px; margin-top: 2rem; font-size: 0.9rem; }
+    @media print {
+      .pdf-button, canvas, .disclaimer { display: none !important; }
+      input[type="number"], input[type="text"], textarea { border: none; background: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Final Project Part B: Modeling Investment Scenarios</h1>
+<p class="description">Use this worksheet to explore how your investment choices impact your net worth growth over time. Fill in the fields and see the dynamic graph update as you plan your scenarios. When done, click "Print / Save as PDF" to download your worksheet.</p>
+
+<div class="section">
+  <h2>Scenario 1: Baseline</h2>
+  <p class="description">This is your current financial trajectory if you make no changes (status quo).</p>
+  <label>Monthly Cash Flow ($):</label>
+  <input type="number" placeholder="0">
+  <label>Current Net Worth ($):</label>
+  <input type="number" id="baselineNetWorth" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 1 Year:</label>
+  <input type="number" id="baseline1" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 5 Years:</label>
+  <input type="number" id="baseline5" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 10 Years:</label>
+  <input type="number" id="baseline10" placeholder="0" oninput="updateChart()">
+</div>
+
+<div class="section">
+  <h2>Scenario 2: Conservative Investment</h2>
+  <p class="description">A low-risk, lower-return strategy compared to your baseline. Use the prompts below to describe exactly how you'd adjust your cash flow and investment approach, and how it would show up on your balance sheet.</p>
+  <label>Instead of investing in:</label>
+  <input type="text" placeholder="e.g., checking account or low-yield savings">
+  <label>I could invest in:</label>
+  <input type="text" placeholder="e.g., conservative mutual fund or bond fund">
+  <label>This would decrease my risk of:</label>
+  <input type="text" placeholder="e.g., market volatility">
+  <label>but also decrease my return by:</label>
+  <input type="text" placeholder="e.g., 2% annually">
+  <label>Net Worth at 1 Year:</label>
+  <input type="number" id="conservative1" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 5 Years:</label>
+  <input type="number" id="conservative5" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 10 Years:</label>
+  <input type="number" id="conservative10" placeholder="0" oninput="updateChart()">
+</div>
+
+<div class="section">
+  <h2>Scenario 3: Aggressive Investment</h2>
+  <p class="description">A higher-risk, higher-return strategy compared to your baseline. Use the prompts below to describe exactly how you'd adjust your cash flow and investment approach, and how it would show up on your balance sheet.</p>
+  <label>Instead of investing in:</label>
+  <input type="text" placeholder="e.g., savings account">
+  <label>I could invest in:</label>
+  <input type="text" placeholder="e.g., index fund or growth stock fund">
+  <label>This would increase my risk of:</label>
+  <input type="text" placeholder="e.g., short-term losses or market swings">
+  <label>but also increase my return by:</label>
+  <input type="text" placeholder="e.g., 4% annually">
+  <label>Net Worth at 1 Year:</label>
+  <input type="number" id="aggressive1" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 5 Years:</label>
+  <input type="number" id="aggressive5" placeholder="0" oninput="updateChart()">
+  <label>Net Worth at 10 Years:</label>
+  <input type="number" id="aggressive10" placeholder="0" oninput="updateChart()">
+</div>
+
+<canvas id="projectionChart" width="900" height="400"></canvas>
+
+<div class="pdf-button">
+  <button onclick="window.print()">Print / Save as PDF</button>
+  <p><small>Use your browser’s “Save as PDF” option when printing.</small></p>
+</div>
+
+<div class="disclaimer">
+  <strong>Privacy Disclaimer:</strong>
+  <p>This tool runs entirely in your web browser. No data you enter is saved, stored, or shared in any way. If you'd like to keep a copy of your information, please download or print your completed form before closing this page.</p>
+</div>
+
+<script>
+let projectionChart;
+function updateChart() {
+  const baseline = [
+    parseFloat(document.getElementById('baselineNetWorth').value) || 0,
+    parseFloat(document.getElementById('baseline1').value) || 0,
+    parseFloat(document.getElementById('baseline5').value) || 0,
+    parseFloat(document.getElementById('baseline10').value) || 0
+  ];
+  const conservative = [
+    baseline[0],
+    parseFloat(document.getElementById('conservative1').value) || 0,
+    parseFloat(document.getElementById('conservative5').value) || 0,
+    parseFloat(document.getElementById('conservative10').value) || 0
+  ];
+  const aggressive = [
+    baseline[0],
+    parseFloat(document.getElementById('aggressive1').value) || 0,
+    parseFloat(document.getElementById('aggressive5').value) || 0,
+    parseFloat(document.getElementById('aggressive10').value) || 0
+  ];
+  const labels = ['Current', '1 Year', '5 Years', '10 Years'];
+
+  const ctx = document.getElementById('projectionChart').getContext('2d');
+  if (projectionChart) projectionChart.destroy();
+  projectionChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Baseline', data: baseline, borderColor: '#3498db', fill: false },
+        { label: 'Conservative', data: conservative, borderColor: '#2ecc71', fill: false },
+        { label: 'Aggressive', data: aggressive, borderColor: '#e74c3c', fill: false }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: 'Net Worth ($)' } },
+        x: { title: { display: true, text: 'Time Horizon' } }
+      }
+    }
+  });
+}
+window.onload = updateChart;
+</script>
+
+</body>
+</html>
