@@ -19,6 +19,14 @@
     .item-row button { background: none; border: none; color: red; font-size: 1.2rem; font-weight: bold; cursor: pointer; }
     .totals, .total-line { font-weight: bold; margin-top: 1rem; border-top: 2px solid #000; padding-top: 0.5rem; display: flex; justify-content: space-between; }
     .calc-line { font-style: italic; text-align: right; color: #555; }
+    .guidance {
+  font-size: 0.9em;
+  color: #555;
+  font-style: italic;
+  margin-top: -5px;
+  margin-bottom: 12px;
+  max-width: 800px;
+}
     .add-button { margin-top: 0.5rem; background: #007bff; color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 5px; cursor: pointer; }
     .pdf-button { text-align: center; margin-top: 2rem; }
     .pdf-button button { background: #28a745; color: white; border: none; padding: 0.75rem 1.25rem; font-size: 1rem; border-radius: 6px; cursor: pointer; }
@@ -88,18 +96,36 @@
   <div class="date-row"><strong>As of:</strong> <input type="date" id="balanceDate" /></div>
   <h3>Assets</h3>
   <h4>Current Assets</h4>
+  <div class="guidance">
+  Assets expected to be converted to cash or used within one year.
+  Examples: checking accounts, savings accounts, cash, and money market funds.
+  Vehicles, laptops, furniture, and homes generally belong under Long-Term Assets.
+</div>
   <div id="currentAssets"></div>
   <button class="add-button" onclick="addItem('currentAssets')">Add Current Asset</button>
   <h4>Long-Term Assets</h4>
+  <div class="guidance">
+  Assets expected to provide value for more than one year.
+  Examples: automobiles, homes, furniture, computers, retirement accounts, and investments.
+</div>
   <div id="longTermAssets"></div>
   <button class="add-button" onclick="addItem('longTermAssets')">Add Long-Term Asset</button>
   <div class="total-line">Total Assets: <span id="totalAssets">$0.00</span></div>
 
   <h3>Liabilities</h3>
   <h4>Current Liabilities</h4>
+  <div class="guidance">
+  Debts that must be paid within one year.
+  Examples: credit card balances, medical bills, and the portion of loans due within the next 12 months.
+  Do NOT include monthly expenses such as rent, groceries, gas, or utilities. Those belong on the Cash Flow Statement.
+</div>
   <div id="currentLiabilities"></div>
   <button class="add-button" onclick="addItem('currentLiabilities')">Add Current Liability</button>
   <h4>Long-Term Liabilities</h4>
+  <div class="guidance">
+  Debts that will take longer than one year to repay.
+  Examples: student loans, auto loans, mortgages, and other long-term debt obligations.
+</div>
   <div id="longTermLiabilities"></div>
   <button class="add-button" onclick="addItem('longTermLiabilities')">Add Long-Term Liability</button>
   <div class="total-line">Total Liabilities: <span id="totalLiabilities">$0.00</span></div>
@@ -110,23 +136,38 @@
 
 <div class="section page-break">
   <h2>Cash Flow Statement</h2>
-  <div class="description">Shows your income and spending over time to help you assess financial health.</div>
+  <div class="description">Shows your income and spending over time to help you assess financial health. This is typically a monthly statement.</div>
   <div class="date-row"><strong>For the period:</strong> <input type="date" id="startDate" /> to <input type="date" id="endDate" /></div>
 
   <h3>Cash Inflows</h3>
+  <div class="guidance">
+  Money coming in during the period.
+  Examples: wages, salaries, tips, gifts received, scholarships, financial aid refunds, and investment income.
+</div>
   <div id="inflows"></div>
   <button class="add-button" onclick="addItem('inflows')">Add Income Source</button>
   <div class="total-line">Total Inflows: <span id="totalInflows">$0.00</span></div>
 
-  <h3>Savings</h3>
+  <h3>Savings Contributions</h3>
+  <div class="guidance">
+  Money intentionally set aside for future goals. This is an outflow because the money leaves your spending budget and moves into savings or investments.
+</div>
   <div id="savingsOutflows"></div>
   <button class="add-button" onclick="addItem('savingsOutflows')">Add Savings Contribution</button>
 
   <h3>Fixed Expenses</h3>
+  <div class="guidance">
+  Expenses that generally remain the same each month.
+  Examples: rent, mortgage payments, insurance premiums, subscriptions, and loan payments.
+</div>
   <div id="fixedOutflows"></div>
   <button class="add-button" onclick="addItem('fixedOutflows')">Add Fixed Expense</button>
 
   <h3>Variable Expenses</h3>
+  <div class="guidance">
+  Expenses that change from month to month.
+  Examples: groceries, dining out, gasoline, entertainment, clothing, and personal spending.
+</div>
   <div id="variableOutflows"></div>
   <button class="add-button" onclick="addItem('variableOutflows')">Add Variable Expense</button>
   <div class="total-line">Total Outflows: <span id="totalOutflows">$0.00</span></div>
