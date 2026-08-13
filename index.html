@@ -342,16 +342,21 @@ document.getElementById('currentRatioText').textContent =
 
 // LIQUIDITY RATIO
 
-setRatioStatus('liquidityRatio', liquidity, 6, 3);
+if (liquidity >= 3)
+  document.getElementById('liquidityRatio').className = "good";
+else if (liquidity > 0)
+  document.getElementById('liquidityRatio').className = "warning";
+else
+  document.getElementById('liquidityRatio').className = "poor";
 
 let liquidityAssessment;
 
-if (liquidity >= 6)
-  liquidityAssessment = "✅ Excellent emergency fund coverage.";
-else if (liquidity >= 3)
-  liquidityAssessment = "⚠️ Reasonable emergency fund coverage.";
+if (liquidity >= 3)
+  liquidityAssessment = "✅ Strong emergency fund coverage.";
+else if (liquidity > 0)
+  liquidityAssessment = "⚠️ Building emergency reserves.";
 else
-  liquidityAssessment = "🔴 Limited emergency reserves.";
+  liquidityAssessment = "🔴 No emergency reserves available.";
 
 document.getElementById('liquidityRatioText').textContent =
 `You can cover about ${liquidity.toFixed(1)} months of expenses with your current assets. ${liquidityAssessment}`;
@@ -363,12 +368,12 @@ setRatioStatus('savingsRatio', savingsRatio, 20, 10);
 
 let savingsAssessment;
 
-if (savingsRatio >= 20)
+if (savingsRatio >= 10)
   savingsAssessment = "✅ Excellent savings habit.";
-else if (savingsRatio >= 10)
-  savingsAssessment = "⚠️ Healthy savings rate.";
+else if (savingsRatio > 0)
+  savingsAssessment = "⚠️ Building a savings habit.";
 else
-  savingsAssessment = "🔴 Opportunity to increase savings.";
+  savingsAssessment = "🔴 No savings contributions recorded.";
 
 document.getElementById('savingsRatioText').textContent =
 `You're saving ${savingsRatio.toFixed(1)}% of your income. ${savingsAssessment}`;
@@ -383,12 +388,29 @@ if (currentRatio >= 2) score += 25;
 else if (currentRatio >= 1) score += 15;
 
 // Liquidity
-if (liquidity >= 6) score += 25;
-else if (liquidity >= 3) score += 15;
+
+if (liquidity >= 3)
+  score += 25;
+
+else if (liquidity >= 2)
+  score += 20;
+
+else if (liquidity >= 1)
+  score += 15;
+
+else if (liquidity > 0)
+  score += 10;
+
+else
+  score += 0;
 
 // Savings
-if (savingsRatio >= 20) score += 25;
-else if (savingsRatio >= 10) score += 15;
+if (savingsRatio >= 10)
+  score += 25;
+else if (savingsRatio > 0)
+  score += 15;
+else
+  score += 0;
 
 const healthEl = document.getElementById('healthScore');
 document.getElementById('debtRatio').classList.remove("good", "warning", "poor");
