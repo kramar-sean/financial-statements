@@ -340,7 +340,10 @@ if (savingsRatio >= 20) score += 25;
 else if (savingsRatio >= 10) score += 15;
 
 const healthEl = document.getElementById('healthScore');
-
+document.getElementById('debtRatio').classList.remove("good", "warning", "poor");
+document.getElementById('currentRatio').classList.remove("good", "warning", "poor");
+document.getElementById('liquidityRatio').classList.remove("good", "warning", "poor");
+document.getElementById('savingsRatio').classList.remove("good", "warning", "poor");
 healthEl.classList.remove("good", "warning", "poor");
 
 let healthMessage;
