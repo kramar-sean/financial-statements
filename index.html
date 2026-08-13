@@ -411,6 +411,23 @@ else if (savingsRatio > 0)
   score += 15;
 else
   score += 0;
+  // Negative Cash Flow Penalty
+
+if (netCash < 0) {
+
+  const cashDeficitPercent =
+    Math.abs(netCash) / inflows * 100;
+
+  if (cashDeficitPercent >= 50)
+    score -= 25;
+
+  else if (cashDeficitPercent >= 25)
+    score -= 20;
+
+  else
+    score -= 10;
+}
+
 
 const healthEl = document.getElementById('healthScore');
 document.getElementById('debtRatio').classList.remove("good", "warning", "poor");
