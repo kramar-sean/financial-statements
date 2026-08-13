@@ -206,6 +206,31 @@ function calculate() {
 
   const totalAssets = currentAssets + longTermAssets;
   const totalLiabilities = currentLiabilities + longTermLiabilities;
+  const hasData =
+  totalAssets > 0 ||
+  totalLiabilities > 0 ||
+  inflows > 0 ||
+  totalOutflows > 0;
+
+if (!hasData) {
+
+  document.getElementById('debtRatio').textContent = '—';
+  document.getElementById('currentRatio').textContent = '—';
+  document.getElementById('liquidityRatio').textContent = '—';
+  document.getElementById('savingsRatio').textContent = '—';
+
+  document.getElementById('debtRatioText').textContent = '';
+  document.getElementById('currentRatioText').textContent = '';
+  document.getElementById('liquidityRatioText').textContent = '';
+  document.getElementById('savingsRatioText').textContent = '';
+
+  document.getElementById('healthScore').textContent = '—';
+
+  document.getElementById('healthText').textContent =
+    'Enter information above to generate your financial health assessment.';
+
+  return;
+}
   const netWorth = totalAssets - totalLiabilities;
 
   const liquidity = totalOutflows > 0 ? (currentAssets / totalOutflows) : 0;
