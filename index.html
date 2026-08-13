@@ -308,16 +308,21 @@ if (!hasData) {
 
   // DEBT RATIO
 
-setRatioStatus('debtRatio', debtRatio, 30, 50, true);
+if (debtRatio <= 50)
+  document.getElementById('debtRatio').className = "good";
+else if (debtRatio <= 80)
+  document.getElementById('debtRatio').className = "warning";
+else
+  document.getElementById('debtRatio').className = "poor";
 
 let debtAssessment;
 
-if (debtRatio < 30)
-  debtAssessment = "✅ Strong debt position.";
-else if (debtRatio < 50)
-  debtAssessment = "⚠️ Moderate debt burden.";
+if (debtRatio <= 50)
+  debtAssessment = "✅ Healthy debt level.";
+else if (debtRatio <= 80)
+  debtAssessment = "⚠️ Debt represents a significant portion of assets.";
 else
-  debtAssessment = "🔴 High reliance on debt financing.";
+  debtAssessment = "🔴 Most assets are financed by debt.";
 
 document.getElementById('debtRatioText').textContent =
 `About ${debtRatio.toFixed(1)}% of your assets are financed by debt. ${debtAssessment}`;
@@ -325,16 +330,21 @@ document.getElementById('debtRatioText').textContent =
 
 // CURRENT RATIO
 
-setRatioStatus('currentRatio', currentRatio, 2, 1);
+if (currentRatio >= 2)
+  document.getElementById('currentRatio').className = "good";
+else if (currentRatio >= 0.5)
+  document.getElementById('currentRatio').className = "warning";
+else
+  document.getElementById('currentRatio').className = "poor";
 
 let currentAssessment;
 
 if (currentRatio >= 2)
   currentAssessment = "✅ Strong short-term financial position.";
-else if (currentRatio >= 1)
-  currentAssessment = "⚠️ Adequate ability to meet short-term obligations.";
+else if (currentRatio >= 0.5)
+  currentAssessment = "⚠️ Short-term obligations should be monitored.";
 else
-  currentAssessment = "🔴 Current liabilities exceed current assets.";
+  currentAssessment = "🔴 Current liabilities significantly exceed current assets.";
 
 document.getElementById('currentRatioText').textContent =
 `You have $${currentRatio.toFixed(2)} in current assets for every $1 of current liabilities. ${currentAssessment}`;
@@ -380,12 +390,23 @@ document.getElementById('savingsRatioText').textContent =
   let score = 0;
 
 // Debt
-if (debtRatio < 30) score += 25;
-else if (debtRatio < 50) score += 15;
+// Debt
+if (debtRatio <= 50)
+  score += 25;
+else if (debtRatio <= 80)
+  score += 15;
+else
+  score += 0;
 
 // Current
-if (currentRatio >= 2) score += 25;
-else if (currentRatio >= 1) score += 15;
+if (currentRatio >= 2)
+  score += 25;
+else if (currentRatio >= 1)
+  score += 20;
+else if (currentRatio >= 0.5)
+  score += 10;
+else
+  score += 0;
 
 // Liquidity
 
