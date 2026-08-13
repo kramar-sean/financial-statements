@@ -27,6 +27,16 @@
   margin-bottom: 12px;
   max-width: 800px;
 }
+    .section-banner {
+  background-color: #d9ecff;
+  color: #003366;
+  font-weight: bold;
+  font-size: 1.2em;
+  padding: 10px 15px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border-left: 5px solid #007bff;
+}
     .add-button { margin-top: 0.5rem; background: #007bff; color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 5px; cursor: pointer; }
     .pdf-button { text-align: center; margin-top: 2rem; }
     .pdf-button button { background: #28a745; color: white; border: none; padding: 0.75rem 1.25rem; font-size: 1rem; border-radius: 6px; cursor: pointer; }
@@ -94,7 +104,7 @@
   <h2>Balance Sheet</h2>
   <div class="description">A snapshot of your net worth at a specific point in time.</div>
   <div class="date-row"><strong>As of:</strong> <input type="date" id="balanceDate" /></div>
-  <h3>Assets</h3>
+  <div class="section-banner">Assets</div>
   <h4>Current Assets</h4>
   <div class="guidance">
   Assets expected to be converted to cash or used within one year.
@@ -112,7 +122,7 @@
   <button class="add-button" onclick="addItem('longTermAssets')">Add Long-Term Asset</button>
   <div class="total-line">Total Assets: <span id="totalAssets">$0.00</span></div>
 
-  <h3>Liabilities</h3>
+  <div class="section-banner">Liabilities</div>
   <h4>Current Liabilities</h4>
   <div class="guidance">
   Debts that must be paid within one year.
@@ -139,7 +149,7 @@
   <div class="description">Shows your income and spending over time to help you assess financial health. This is typically a monthly statement.</div>
   <div class="date-row"><strong>For the period:</strong> <input type="date" id="startDate" /> to <input type="date" id="endDate" /></div>
 
-  <h3>Cash Inflows</h3>
+  <div class="section-banner">Cash Inflows</div>
   <div class="guidance">
   Money coming in during the period.
   Examples: wages, salaries, tips, gifts received, scholarships, financial aid refunds, and investment income.
@@ -147,7 +157,7 @@
   <div id="inflows"></div>
   <button class="add-button" onclick="addItem('inflows')">Add Income Source</button>
   <div class="total-line">Total Inflows: <span id="totalInflows">$0.00</span></div>
-
+<div class="section-banner">Cash Outflows</div>
   <h3>Savings Contributions</h3>
   <div class="guidance">
   Money intentionally set aside for future goals. This is an outflow because the money leaves your spending budget and moves into savings or investments.
